@@ -1,0 +1,9 @@
+/docker/*
+!/docker/docker-compose.yml
+!/docker/docker-sync.yml
+
+/source/*
+!/source/app
+!/source/src
+
+*.sql

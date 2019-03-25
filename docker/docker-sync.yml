@@ -1,0 +1,7 @@
+version: "2"
+
+syncs:
+  source-sync:
+    src: ~/Desktop/newLucat/source
+    sync_strategy: 'native_osx'
+    sync_excludes: ['.git', '.github', '.idea', '.gitignore', 'var/cache', 'var/logs', '.DS_Store']

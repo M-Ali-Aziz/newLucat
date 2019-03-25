@@ -1,0 +1,94 @@
+version: '3.7'
+services:
+    ubuntu:
+        image: ehl-ubuntu:latest
+        container_name: docker_ubuntu_1
+        # user: "${UID}:${GID}"
+        # user: www-data
+        # user: root:root
+        depends_on:
+            - mysql
+        volumes:
+            # - ~/Applications/ehl/source:/applications/http/ehl
+            
+            # - /applications/http/ehl
+            # - ~/Applications/ehl/source/app/AppKernel.php:/applications/http/ehl/app/AppKernel.php
+            # - ~/Applications/ehl/source/app/config:/applications/http/ehl/app/config
+            # - ~/Applications/ehl/source/bin:/applications/http/ehl/bin
+            # - ~/Applications/ehl/source/composer.json:/applications/http/ehl/composer.json
+            # - ~/Applications/ehl/source/composer.lock:/applications/http/ehl/composer.lock
+            # - ~/Applications/ehl/source/composer.phar:/applications/http/ehl/composer.phar
+            # - ~/Applications/ehl/source/config:/applications/http/ehl/config
+            # - ~/Applications/ehl/source/model:/applications/http/ehl/model
+            # - ~/Applications/ehl/source/supervisord.log:/applications/http/ehl/supervisord.log
+            # - ~/Applications/ehl/source/supervisord.pid:/applications/http/ehl/supervisord.pid
+            # - ~/Applications/ehl/source/var:/applications/http/ehl/var
+            # - ~/Applications/ehl/source/vendor:/applications/http/ehl/vendor
+            # - ~/Applications/ehl/source/web/var:/applications/http/ehl/web/var
+            # - ~/Applications/ehl/source/web/app.php:/applications/http/ehl/web/app.php
+
+            ## Docker-sync
+            - source-sync:/applications/http/ehl:nocopy
+
+            ## NFS
+            # - nfsmount:/applications/http/ehl
+            # - nfsmount1:/applications/http/ehl/app/Resources
+            # - nfsmount2:/applications/http/ehl/src
+            # - nfsmount3:/applications/http/ehl/web
+            
+            - ~/Applications/ehl/docker/settings/cert:/applications/cert
+            - ~/Applications/ehl/docker/settings/scripts:/applications/scripts
+            - ~/.ssh:/root/.ssh
+        ports:
+            - 80:80
+            - 443:443
+        tty: true
+        environment:
+            WEB_DOCUMENT_ROOT: "/applications/http/ehl/web"
+            APPLICATION_PATH: "/applications/http/ehl"
+            LANG: "C.UTF-8"
+            LC_ALL: "C.UTF-8"
+    mysql:
+        image: mysql:5.7
+        container_name: docker_mysql_1
+        # command: --character-set-server=utf8mb4 --collation-server=utf8mb4_swedish_ci
+        volumes:
+            - ~/Applications/ehl/docker/mysql:/var/lib/mysql
+            - ~/Applications/ehl/docker/mysql:/docker-entrypoint-initdb.d
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: "pimcore"
+            MYSQL_PASSWORD: "pimcore"
+            MYSQL_USER: "pimcore"
+            MYSQL_DATABASE: "pimcore"
+            LANG: "C.UTF-8"
+            LC_ALL: "C.UTF-8"
+volumes:
+    ## Docker-sync
+    source-sync: { external: true }
+#     ## NFS
+    # nfsmount:
+    #     driver: local
+    #     driver_opts:
+    #       type: nfs
+    #       o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=4
+    #       device: ":/Users/mo1736az/Applications/ehl/source"
+    # nfsmount1:
+    #     driver: local
+    #     driver_opts:
+    #       type: nfs
+    #       o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+    #       device: ":/Users/mo1736az/Applications/ehl/source/app/Resources"
+    # nfsmount2:
+    #     driver: local
+    #     driver_opts:
+    #       type: nfs
+    #       o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+    #       device: ":/Users/mo1736az/Applications/ehl/source/src"
+    # nfsmount3:
+    #     driver: local
+    #     driver_opts:
+    #       type: nfs
+    #       o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+    #       device: ":/Users/mo1736az/Applications/ehl/source/web"
