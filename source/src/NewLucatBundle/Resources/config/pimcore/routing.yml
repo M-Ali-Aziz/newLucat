@@ -1,0 +1,5 @@
+new_lucat:
+    resource: "@NewLucatBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
