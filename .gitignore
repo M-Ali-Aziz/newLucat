@@ -5,6 +5,6 @@
 /source/*
 !/source/app
 !/source/src
-!/source/var/bundels
+!/source/var/bundels/*
 
 *.sql
