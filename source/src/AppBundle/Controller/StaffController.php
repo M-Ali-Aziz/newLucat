@@ -21,6 +21,71 @@ use \Pimcore\Tool;
 */
 class StaffController extends Page
 {
+
+
+    /**
+     * New Lucat
+     */
+    public function newlucatAction(Request $request)
+    {
+        $departmentNumber = (string) $request->get('id');
+
+        if ($departmentNumber) {
+            // Get Organisation
+            $organisation = new DataObject\NewLucatOrganisation\Listing();
+            $organisation->setCondition('departmentNumber= ?', $departmentNumber);
+            $organisation->load();
+
+            if ($organisation->getObjects()) {
+                $organisation = $organisation->getObjects()[0];
+
+                // Get person(s)
+                $personArr = [];
+                $persons = new DataObject\NewLucatPerson\Listing();
+
+                foreach ($persons as $person) {
+                    if ($person->getOrganisationer()) {
+                        foreach ($person->getOrganisationer() as $org) {
+                            if ($org->getDepartmentNumber() == $departmentNumber) {
+                                $personArr[] = $person;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Get Portal-url
+            $portalUrl = new DataObject\LucrisOrganisation\Listing();
+            $portalUrl->setCondition('sourceId= ?', 'v1000017');
+            $portalUrl = $portalUrl->getObjects()[0];
+            $portalUrl = $portalUrl->getPortalUrl();
+
+            // Get department(s)
+            $departmentArr = [];
+            $departments = new DataObject\NewLucatOrganisation\Listing();
+            $departments->setCondition('ParentDepartmentNumber= ?', $departmentNumber);
+            $departments->load();
+
+            if ($departments->getObjects()) {
+                foreach ($departments->getObjects() as $department) {
+                    $departmentArr[] = $department;
+                }
+            }
+
+            // Get GPS-coordinates
+            $google = \Pimcore\Config::getSystemConfig()->services->google;
+            $gpsC = $organisation->getGpsC();
+        }
+
+        // Assing variables to view
+        $this->view->organisation = ($organisation) ? $organisation : null;
+        $this->view->portalUrl = ($portalUrl) ? $portalUrl : null;
+        $this->view->persons = ($personArr) ? $personArr : null;
+        $this->view->departments = ($departmentArr) ? $departmentArr : null;
+        $this->view->google = ($google) ? $google : null;
+        $this->view->gpsC = ($gpsC) ? $gpsC : null;
+    }
+
     /**
     * Detail action
     * @todo filter and validate input
