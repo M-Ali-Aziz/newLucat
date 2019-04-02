@@ -4,4 +4,4 @@ syncs:
   source-sync:
     src: ~/Desktop/newLucat/source
     sync_strategy: 'native_osx'
-    sync_excludes: ['.git', '.github', '.idea', '.gitignore', 'var/cache', 'var/logs', '.DS_Store']
+    sync_excludes: ['.git', '.github', '.idea', '.gitignore', 'web/var/tmp', 'var/tmp', 'var/sessions', 'var/cache', '.DS_Store']
