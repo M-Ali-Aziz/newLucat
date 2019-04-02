@@ -22,7 +22,7 @@ class OrganisationProvider extends AbstractProvider
 
         // Prepare departmentNumbers
         $organisations = $this->getOrganisations();
-        $departmentNumbers = array_map(function($org) { return("'" . $org['departmentNumber'] . "'"); }, $organisations);
+        $departmentNumbers = array_map(function($org) { return("'" . $org . "'"); }, $organisations);
         $departmentNumbers = implode(',', $departmentNumbers);
 
         // Get lucatOrgParentId
@@ -39,31 +39,7 @@ class OrganisationProvider extends AbstractProvider
         $db = Db::get();
 
         // Fetch all organisations
-        $sql = "SELECT "
-            . "guid, "
-            . "departmentNumber, "
-            . "displayName, "
-            . "luEduOrgOuEN, "
-            . "luEduOrgUnitEducationDescription, "
-            . "luEduOrgUnitEducationDescriptionEN, "
-            . "luEduOrgUnitEducationDescriptionURI, "
-            . "luEduOrgUnitEducationDescriptionURIEN, "
-            . "luEduOrgUnitResearchDescriptionURI, "
-            . "luEduOrgUnitResearchDescriptionURIEN, "
-            . "luEduOrgUnitResearchDescription, "
-            . "luEduOrgUnitResearchDescriptionEN, "
-            . "luEduOrgType, "
-            . "postalAddress, "
-            . "street, "
-            . "postOfficeBox, "
-            . "l, "
-            . "telephoneNumber, "
-            . "luEduOrgUnitVxNumber, "
-            . "luEduOrgUnitGpsC, "
-            . "luEduOrgUnitDomain, "
-            . "luEduOrgUnitHomePageURI, "
-            . "luEduOrgUnitHomePageURIEN, "
-            . "street "
+        $sql = "SELECT * "
             . "FROM luEduOrgUnit "
             . "WHERE departmentNumber IN ($departmentNumbers)";
             
@@ -78,6 +54,16 @@ class OrganisationProvider extends AbstractProvider
             $oIdExisting = $db->fetchAll($query);
             $o_id = (int) $oIdExisting[0]['o_id'];
 
+            // Modify data - postalAddress
+            if ($lucatOpenOrg['postalAddress']) {
+                $postalAddress = substr_replace($lucatOpenOrg['postalAddress'],
+                    ',',
+                    strpos($lucatOpenOrg['postalAddress'], '$'), 0);
+                $postalAddress = str_replace('$', ' ', $postalAddress);
+            }
+            // Modify data - luEduOrgUnitGpsC
+            $luEduOrgUnitGpsC = trim($lucatOpenOrg['luEduOrgUnitGpsC'], '<\>');
+
             if ($o_id) {
                 // Update the Object
                 $lucatOrgObj = DataObject\LucatOrganisation::getById($o_id);
@@ -85,14 +71,15 @@ class OrganisationProvider extends AbstractProvider
                 $values = [
                     'guid' => $lucatOpenOrg['guid'],
                     'departmentNumber' => $lucatOpenOrg['departmentNumber'],
+                    'ParentDepartmentNumber' => $lucatOpenOrg['ParentDepartmentNumber'],
                     'orgType' => $lucatOpenOrg['luEduOrgType'],
-                    'postalAdress' => $lucatOpenOrg['postalAddress'],
+                    'postalAdress' => $postalAddress,
                     'street' => $lucatOpenOrg['street'],
                     'postOfficeBox' => $lucatOpenOrg['postOfficeBox'],
                     'location' => $lucatOpenOrg['l'],
                     'telephoneNumber' => $lucatOpenOrg['telephoneNumber'],
                     'vxNumber' => $lucatOpenOrg['luEduOrgUnitVxNumber'],
-                    'gpsC' => $lucatOpenOrg['luEduOrgUnitGpsC'],
+                    'gpsC' => $luEduOrgUnitGpsC,
                     'domain' => $lucatOpenOrg['luEduOrgUnitDomain'],
                     'internalAdress' => $lucatOpenOrg['street'],
                 ];
@@ -100,6 +87,8 @@ class OrganisationProvider extends AbstractProvider
                 $lucatOrgObj->setValues($values);
                 $lucatOrgObj->setName($lucatOpenOrg['displayName'], $l[0]);
                 $lucatOrgObj->setName($lucatOpenOrg['luEduOrgOuEN'], $l[1]);
+                $lucatOrgObj->setdescription($lucatOpenOrg['description'], $l[0]);
+                $lucatOrgObj->setdescription($lucatOpenOrg['luEduOrgUnitResearchDescriptionEN'], $l[1]);
                 $lucatOrgObj->setEducationDescription($lucatOpenOrg['luEduOrgUnitEducationDescription'], $l[0]);
                 $lucatOrgObj->setEducationDescription($lucatOpenOrg['luEduOrgUnitEducationDescriptionEN'], $l[1]);
                 $lucatOrgObj->setEducationUri($lucatOpenOrg['luEduOrgUnitEducationDescriptionURI'], $l[0]);
@@ -111,8 +100,7 @@ class OrganisationProvider extends AbstractProvider
                 $lucatOrgObj->setResearchUri($lucatOpenOrg['luEduOrgUnitResearchDescriptionURI'], $l[0]);
                 $lucatOrgObj->setResearchUri($lucatOpenOrg['luEduOrgUnitResearchDescriptionURIEN'], $l[1]);
 
-                $lucatOrgObj->save();
-                
+                $lucatOrgObj->save(); 
             }
             else {
                 // Save new Object
@@ -124,14 +112,15 @@ class OrganisationProvider extends AbstractProvider
                     'o_published' => $published,
                     'guid' => $lucatOpenOrg['guid'],
                     'departmentNumber' => $lucatOpenOrg['departmentNumber'],
+                    'ParentDepartmentNumber' => $lucatOpenOrg['ParentDepartmentNumber'],
                     'orgType' => $lucatOpenOrg['luEduOrgType'],
-                    'postalAdress' => $lucatOpenOrg['postalAddress'],
+                    'postalAdress' => $postalAddress,
                     'street' => $lucatOpenOrg['street'],
                     'postOfficeBox' => $lucatOpenOrg['postOfficeBox'],
                     'location' => $lucatOpenOrg['l'],
                     'telephoneNumber' => $lucatOpenOrg['telephoneNumber'],
                     'vxNumber' => $lucatOpenOrg['luEduOrgUnitVxNumber'],
-                    'gpsC' => $lucatOpenOrg['luEduOrgUnitGpsC'],
+                    'gpsC' => $luEduOrgUnitGpsC,
                     'domain' => $lucatOpenOrg['luEduOrgUnitDomain'],
                     'internalAdress' => $lucatOpenOrg['street'],
                 ];
@@ -139,6 +128,8 @@ class OrganisationProvider extends AbstractProvider
                 $lucatOrgObj->setValues($values);
                 $lucatOrgObj->setName($lucatOpenOrg['displayName'], $l[0]);
                 $lucatOrgObj->setName($lucatOpenOrg['luEduOrgOuEN'], $l[1]);
+                $lucatOrgObj->setdescription($lucatOpenOrg['description'], $l[0]);
+                $lucatOrgObj->setdescription($lucatOpenOrg['luEduOrgUnitResearchDescriptionEN'], $l[1]);
                 $lucatOrgObj->setEducationDescription($lucatOpenOrg['luEduOrgUnitEducationDescription'], $l[0]);
                 $lucatOrgObj->setEducationDescription($lucatOpenOrg['luEduOrgUnitEducationDescriptionEN'], $l[1]);
                 $lucatOrgObj->setEducationUri($lucatOpenOrg['luEduOrgUnitEducationDescriptionURI'], $l[0]);

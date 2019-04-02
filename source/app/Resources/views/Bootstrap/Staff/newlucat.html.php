@@ -4,33 +4,12 @@
  * @var \Pimcore\Templating\PhpEngine $view
  * @var \Pimcore\Templating\GlobalVariables $app
  */
-$this->extend('default.html.php');
-?>
-
-<?php 
-
 ?>
 
 <?php $language = $this->language;?>
-<?php if($this->editmode) : ?>
-<style>
-table, table td, table th {border:none}
-.pimcore_block_button_up, .pimcore_block_button_down {display:none !important;}
-#pimcore_editable_rightAreablock .pimcore_area_edit_button,
-#pimcore_editable_mainAreablock .pimcore_area_edit_button {z-index: 99;}
-#content_sidebar table {margin-bottom:0;}
-.info {font-weight:700;margin:0;}
-.margins {margin:8px 0 0 0;}
-</style>
-<?php endif; ?>
 
-<?php if ($this->document->getProperty('bootstrap')) : ?>
-    <?= $this->template("Bootstrap/Staff/newlucat.html.php"); ?>
-<?php else : ?>
-
-<!-- Text content start -->
-<div id="text_wrapper" class="grid-15<?php echo ((!$this->getProperty('navStartNode')) || ($this->getProperty('push-8'))) ? " push-8 alpha" : ""; ?>">
-    <article id="text_content_main">
+<div class="row">
+    <div class="col-12 col-lg-8 mb-6 mb-lg-0">
         <?php if ($this->organisation): ?>
             <?php $org = $this->organisation; ?>
             <h1><?php echo $org->getName(); ?></h1>
@@ -86,34 +65,19 @@ table, table td, table th {border:none}
 
             <?php if ($this->gpsC && $this->google): ?>
                 <h2><?php echo $this->translate('map'); ?></h2>
-                <iframe width="430" height="500" src="https://www.google.com/maps/embed/v1/place?key=<?php echo $this->google->browserapikey; ?>&q=<?php echo $this->gpsC; ?>&zoom=12" width="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
+                <iframe width="750" height="500" src="https://www.google.com/maps/embed/v1/place?key=<?php echo $this->google->browserapikey; ?>&q=<?php echo $this->gpsC; ?>&zoom=12" width="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
             <?php endif ?>
 
         <?php else: ?>
             <h1>Ingen Organisation hittades!!!</h1>
         <?php endif ?>
-    </article>
-</div>
-<!-- Text content end -->
-
-<!-- Sidebar start -->
-<div id="content_sidebar_wrapper" class="<?php echo ((!$this->getProperty('navStartNode')) || ($this->getProperty('push-8'))) ? "push-8 " : ""; ?>grid-8 omega">
-    <?php if($this->org) : ?>
-    <div id="content_sidebar">
-        <?php echo $this->render('Staff/partialOrgContactDetails.html.php', array(
-                'name'      => $this->org->getName($this->language),
-                'visiting'  => $this->org->getStreet() . ', ' . $this->org->getLocation(),
-                'postal'    => str_replace('$',', ',$this->org->getPostalAdress()),
-                'internal'  => $this->org->getPostOfficeBox(),
-                'phone'     => $this->org->getTelephoneNumber() ? $this->org->getTelephoneNumber() : $this->org->getVxNumber(),
-                'website'   => $this->org->getUrl(),
-                'gm_key' => $this->google->browserapikey,
-                'gm_q'      => str_replace(array('<','>'), '', $this->org->getGpsC())
-            ));
-        ?>
     </div>
-    <?php endif;?>
-</div>
-<!-- Sidebar end -->
 
-<?php endif; ?>
+            
+    <div class="col-12 col-lg-4">
+        <?php echo $this->areablock('rightAreablock',array(
+            "toolbar"=>0,
+            "allowed"=> array("wysiwyg","snippet","youtube","image","uid","infobox","puff")
+            ));?>
+    </div>
+</div>

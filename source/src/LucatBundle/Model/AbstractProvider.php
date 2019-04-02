@@ -89,13 +89,10 @@ class AbstractProvider
     */
     protected function getUids()
     {
-        // Get lucat config file
-        $lucatConfigFile = $this->getLucatConfigFile();
-
-        // Prepare departmentNumbers
-        $organisations = $lucatConfigFile['organisations'];
-        $departmentNumber = array_map(function($org) { return("'" . $org['departmentNumber'] . "'"); }, $organisations);
-        $departmentNumbers = implode(',', $departmentNumber);
+        // Get departmentNumbers
+        $organisations = $this->getOrganisations();
+        $departmentNumbers = array_map(function($org) { return("'" . $org . "'"); }, $organisations);
+        $departmentNumbers = implode(',', $departmentNumbers);
 
         // Get lucatOpen
         $lucatopen = $this->getLucatOpen();

@@ -22,7 +22,6 @@ use \Pimcore\Tool;
 class StaffController extends Page
 {
 
-
     /**
      * New Lucat
      */
@@ -32,7 +31,7 @@ class StaffController extends Page
 
         if ($departmentNumber) {
             // Get Organisation
-            $organisation = new DataObject\NewLucatOrganisation\Listing();
+            $organisation = new DataObject\LucatOrganisation\Listing();
             $organisation->setCondition('departmentNumber= ?', $departmentNumber);
             $organisation->load();
 
@@ -41,7 +40,7 @@ class StaffController extends Page
 
                 // Get person(s)
                 $personArr = [];
-                $persons = new DataObject\NewLucatPerson\Listing();
+                $persons = new DataObject\LucatPerson\Listing();
 
                 foreach ($persons as $person) {
                     if ($person->getOrganisationer()) {
@@ -52,29 +51,30 @@ class StaffController extends Page
                         }
                     }
                 }
-            }
 
-            // Get Portal-url
-            $portalUrl = new DataObject\LucrisOrganisation\Listing();
-            $portalUrl->setCondition('sourceId= ?', 'v1000017');
-            $portalUrl = $portalUrl->getObjects()[0];
-            $portalUrl = $portalUrl->getPortalUrl();
+                // Get Portal-url
+                $portalUrl = new DataObject\LucrisOrganisation\Listing();
+                $portalUrl->setCondition('sourceId= ?', $departmentNumber);
+                $portalUrl = $portalUrl->getObjects()[0];
+                $portalUrl = ($portalUrl) ? $portalUrl->getPortalUrl() : null;
 
-            // Get department(s)
-            $departmentArr = [];
-            $departments = new DataObject\NewLucatOrganisation\Listing();
-            $departments->setCondition('ParentDepartmentNumber= ?', $departmentNumber);
-            $departments->load();
-
-            if ($departments->getObjects()) {
-                foreach ($departments->getObjects() as $department) {
-                    $departmentArr[] = $department;
+                // Get department(s)
+                $departmentArr = [];
+                $departments = new DataObject\LucatOrganisation\Listing();
+                $departments->setCondition('ParentDepartmentNumber= ?', $departmentNumber);
+                $departments->load();
+                if ($departments->getObjects()) {
+                    foreach ($departments->getObjects() as $department) {
+                        $departmentArr[] = $department;
+                    }
                 }
-            }
 
-            // Get GPS-coordinates
-            $google = \Pimcore\Config::getSystemConfig()->services->google;
-            $gpsC = $organisation->getGpsC();
+                // Get GPS-coordinates
+                $google = \Pimcore\Config::getSystemConfig()->services->google;
+                $gpsC = $organisation->getGpsC();
+            } else {
+                $organisation = null;
+            }
         }
 
         // Assing variables to view
