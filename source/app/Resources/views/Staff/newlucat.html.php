@@ -7,10 +7,6 @@
 $this->extend('default.html.php');
 ?>
 
-<?php 
-
-?>
-
 <?php $language = $this->language;?>
 <?php if($this->editmode) : ?>
 <style>
@@ -28,7 +24,6 @@ table, table td, table th {border:none}
     <?= $this->template("Bootstrap/Staff/newlucat.html.php"); ?>
 <?php else : ?>
 
-<!-- Text content start -->
 <div id="text_wrapper" class="grid-15<?php echo ((!$this->getProperty('navStartNode')) || ($this->getProperty('push-8'))) ? " push-8 alpha" : ""; ?>">
     <article id="text_content_main">
         <?php if ($this->organisation): ?>
@@ -94,26 +89,5 @@ table, table td, table th {border:none}
         <?php endif ?>
     </article>
 </div>
-<!-- Text content end -->
-
-<!-- Sidebar start -->
-<div id="content_sidebar_wrapper" class="<?php echo ((!$this->getProperty('navStartNode')) || ($this->getProperty('push-8'))) ? "push-8 " : ""; ?>grid-8 omega">
-    <?php if($this->org) : ?>
-    <div id="content_sidebar">
-        <?php echo $this->render('Staff/partialOrgContactDetails.html.php', array(
-                'name'      => $this->org->getName($this->language),
-                'visiting'  => $this->org->getStreet() . ', ' . $this->org->getLocation(),
-                'postal'    => str_replace('$',', ',$this->org->getPostalAdress()),
-                'internal'  => $this->org->getPostOfficeBox(),
-                'phone'     => $this->org->getTelephoneNumber() ? $this->org->getTelephoneNumber() : $this->org->getVxNumber(),
-                'website'   => $this->org->getUrl(),
-                'gm_key' => $this->google->browserapikey,
-                'gm_q'      => str_replace(array('<','>'), '', $this->org->getGpsC())
-            ));
-        ?>
-    </div>
-    <?php endif;?>
-</div>
-<!-- Sidebar end -->
 
 <?php endif; ?>

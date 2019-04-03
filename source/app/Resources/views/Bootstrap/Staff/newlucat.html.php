@@ -72,12 +72,4 @@
             <h1>Ingen Organisation hittades!!!</h1>
         <?php endif ?>
     </div>
-
-            
-    <div class="col-12 col-lg-4">
-        <?php echo $this->areablock('rightAreablock',array(
-            "toolbar"=>0,
-            "allowed"=> array("wysiwyg","snippet","youtube","image","uid","infobox","puff")
-            ));?>
-    </div>
 </div>
