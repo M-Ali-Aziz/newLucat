@@ -117,7 +117,7 @@ class AbstractProvider
     }
 
     /**
-     * Get all EHL departmentNumber from lucatConfigFile
+     * Get all EHL departmentNumber from LucatOpen
      *
      * @return array
     */
@@ -125,9 +125,33 @@ class AbstractProvider
     {
         // Get lucat config file
         $lucatConfigFile = $this->getLucatConfigFile();
+        // Prepare departmentNumber
+        $EHL_departmentNumber = $lucatConfigFile['organisation'];
 
-        // Prepare departmentNumbers
-        $organisations = $lucatConfigFile['organisations'];
+        // Connect to lucatOpen
+        $lucatopen = $this->getLucatOpen();
+
+        // Get all EHL departmentNumber from LucatOpen
+        $organisations = [$EHL_departmentNumber];
+        $dArr = [$EHL_departmentNumber];
+        while ($dArr) {
+            foreach ($dArr as $d) {
+                $sql = "SELECT departmentNumber "
+                    . "FROM luEduOrgUnit "
+                    . "WHERE ParentDepartmentNumber='" . $d . "'";
+
+                $statement = $lucatopen->prepare($sql);
+                $statement->execute();
+                $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+                $helpArr = [];
+                foreach ($result as $key => $org) {
+                        $organisations[] = $org['departmentNumber'];
+                        $helpArr[] = $org['departmentNumber'];
+                }
+            }
+            $dArr = array_diff($helpArr, $dArr);
+        }
 
         return $organisations;
     }
