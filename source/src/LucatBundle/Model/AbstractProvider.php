@@ -25,7 +25,7 @@ class AbstractProvider
             return $lucatConfigFile;
         }
         else {
-            // Add log to var/log/lucat.log
+            // Add log to lucat.log
             \Pimcore\Log\Simple::log("lucat", "LUCAT ERROR: Failed to get lucat config file " . __FILE__ . " Line: " . __LINE__);
             // Exception
             throw new Exception("LUCAT ERROR: Failed to get lucat config file" . "\n");
@@ -54,9 +54,10 @@ class AbstractProvider
             return $lucatopen;
 
         } catch (PDOException $e) {
-            // Add log to var/log/lucat.log
+            // Add log to lucat.log
             \Pimcore\Log\Simple::log("lucat", "LUCAT ERROR: Failed to connect to LucatOpen: " . $e->getMessage() . " " . __FILE__ . " Line: " . __LINE__);
-            echo "Failed to connect to LucatOpen: " . $e->getMessage() . "\n";
+
+            throw new Exception("Failed to connect to LucatOpen: " . $e->getMessage() . "\n");
         }
     }
 
@@ -74,7 +75,7 @@ class AbstractProvider
             return $parentId;
         }
         else {
-            // Add log to var/log/lucat.log
+            // Add log to lucat.log
             \Pimcore\Log\Simple::log("lucat", "LUCAT ERROR: Failed to get ParentId for: $configName, from Website Settings! " . __FILE__ . " Line: " . __LINE__);
 
             // Exception
