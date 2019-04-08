@@ -57,7 +57,7 @@
                 <h2><?php echo $this->translate('section'); ?></h2>
                 <ul>
                 <?php foreach ($this->departments as $department): ?>
-                    <?php $href = \Pimcore\Tool::getHostUrl() . $this->document->getFullPath() .'/'; ?>
+                    <?php $href = \Pimcore\Tool::getHostUrl() . $this->document->getFullPath() .'newlucat/'; ?>
                     <li><a href="<?php echo $href . $department->getDepartmentNumber(); ?>"><?php echo $department->getName(); ?></a></li>
                 <?php endforeach ?>
                 </ul>

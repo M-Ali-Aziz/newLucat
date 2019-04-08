@@ -41,6 +41,7 @@ class StaffController extends Page
                 // Get person(s)
                 $personArr = [];
                 $persons = new DataObject\LucatPerson\Listing();
+                $persons->setOrderKey('surName');
 
                 foreach ($persons as $person) {
                     if ($person->getOrganisationer()) {
@@ -61,6 +62,7 @@ class StaffController extends Page
                 // Get department(s)
                 $departmentArr = [];
                 $departments = new DataObject\LucatOrganisation\Listing();
+                $departments->setOrderKey('name');
                 $departments->setCondition('ParentDepartmentNumber= ?', $departmentNumber);
                 $departments->load();
                 if ($departments->getObjects()) {
