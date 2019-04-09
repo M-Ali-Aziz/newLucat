@@ -21,32 +21,39 @@
             <?php if($this->heading): ?>
             <h3><?php echo $this->heading; ?></h3>
             <?php endif; ?>
-            <p><?php echo $this->roles; ?></p>
-            <p>
-                <?php if($this->mail): ?>
-                    <a href="mailto:<?php echo $this->mail; ?>" title="<?php echo $this->mail; ?>"><?php echo $this->mail; ?></a><br>
-                <?php endif; ?>
-                <?php if($this->phone): ?>
-                    <?php echo ucfirst($this->translate('phone')); ?>: <?php echo $this->phone; ?><br>
-                <?php endif; ?>
-                <?php if($this->room): ?>
-                    <?php echo ucfirst($this->translate('room')); ?>: <?php echo $this->room; ?><br>
-                <?php endif; ?>
-            </p>
-            <?php if($this->website && !$this->moreinfo): ?>
-            <p><?php echo $this->translate('personal_website') ?>: <a href="<?php echo $this->website; ?>" title="<?php echo $this->website; ?>"><?php echo $this->website; ?></a></p>
-            <?php endif; ?>
+            <?php if ($this->roles && $this->LeaveOfAbsence): ?>
+                <p><?php echo $this->roles; ?> (<?php echo $this->translate('LeaveOfAbsence') ?>)</p>
+            <?php elseif ($this->roles): ?>
+                <p><?php echo $this->roles; ?></p>
+            <?php endif ?>
 
-            <?php if($this->portalUrl && !$this->moreinfo): ?>
-            <p><a href="<?php echo $this->portalUrl; ?>" title="<?php echo $this->portalUrl; ?>"><?php echo $this->translate('my_profile_lucris') ?></a></p>
-            <?php endif; ?>
+            <?php if (!$this->LeaveOfAbsence): ?>
+                <p>
+                    <?php if($this->mail): ?>
+                        <a href="mailto:<?php echo $this->mail; ?>" title="<?php echo $this->mail; ?>"><?php echo $this->mail; ?></a><br>
+                    <?php endif; ?>
+                    <?php if($this->phone): ?>
+                        <?php echo ucfirst($this->translate('phone')); ?>: <?php echo $this->phone; ?><br>
+                    <?php endif; ?>
+                    <?php if($this->room): ?>
+                        <?php echo ucfirst($this->translate('room')); ?>: <?php echo $this->room; ?><br>
+                    <?php endif; ?>
+                </p>
+                <?php if($this->website && !$this->moreinfo): ?>
+                <p><?php echo $this->translate('personal_website') ?>: <a href="<?php echo $this->website; ?>" title="<?php echo $this->website; ?>"><?php echo $this->website; ?></a></p>
+                <?php endif; ?>
+
+                <?php if($this->portalUrl && !$this->moreinfo): ?>
+                <p><a href="<?php echo $this->portalUrl; ?>" title="<?php echo $this->portalUrl; ?>"><?php echo $this->translate('my_profile_lucris') ?></a></p>
+                <?php endif; ?>
+            <?php endif ?>
         </div>
     </div>
-    <div class="row">
-        <?php if($this->moreinfo): ?>
-        <p><a href="<?php echo $this->moreinfo; ?>"><?php echo ucfirst($this->translate('show more info')); ?></a></p>
-        <?php endif; ?>
-    </div>
+    <?php if($this->moreinfo && !$this->LeaveOfAbsence): ?>
+        <div class="row">
+            <p><a href="<?php echo $this->moreinfo; ?>"><?php echo ucfirst($this->translate('show more info')); ?></a></p>
+        </div>
+    <?php endif ?>
 </div>
 <?php else : ?>
 <div class="person">
@@ -64,32 +71,37 @@
         <?php if($this->heading): ?>
         <h2><?php echo $this->heading; ?></h2>
         <?php endif; ?>
+        <?php if ($this->roles && $this->LeaveOfAbsence): ?>
+            <p><?php echo $this->roles; ?> (<?php echo $this->translate('LeaveOfAbsence') ?>)</p>
+        <?php elseif ($this->roles): ?>
+            <p><?php echo $this->roles; ?></p>
+        <?php endif ?>
 
-        <p><?php echo $this->roles; ?></p>
+        <?php if (!$this->LeaveOfAbsence): ?>
+            <p>
+            <?php if($this->mail): ?>
+                <a href="mailto:<?php echo $this->mail; ?>" title="<?php echo $this->mail; ?>"><?php echo $this->mail; ?></a><br>
+            <?php endif; ?>
+            <?php if($this->phone): ?>
+                <?php echo ucfirst($this->translate('phone')); ?>: <?php echo $this->phone; ?><br>
+            <?php endif; ?>
+            <?php if($this->room): ?>
+                <?php echo ucfirst($this->translate('room')); ?>: <?php echo $this->room; ?><br>
+            <?php endif; ?>
+            </p>
 
-        <p>
-        <?php if($this->mail): ?>
-            <a href="mailto:<?php echo $this->mail; ?>" title="<?php echo $this->mail; ?>"><?php echo $this->mail; ?></a><br>
-        <?php endif; ?>
-        <?php if($this->phone): ?>
-            <?php echo ucfirst($this->translate('phone')); ?>: <?php echo $this->phone; ?><br>
-        <?php endif; ?>
-        <?php if($this->room): ?>
-            <?php echo ucfirst($this->translate('room')); ?>: <?php echo $this->room; ?><br>
-        <?php endif; ?>
-        </p>
+            <?php if($this->website && !$this->moreinfo): ?>
+                <p><?php echo $this->translate('personal_website') ?>: <a href="<?php echo $this->website; ?>" title="<?php echo $this->website; ?>"><?php echo $this->website; ?></a></p>
+            <?php endif; ?>
 
-        <?php if($this->website && !$this->moreinfo): ?>
-            <p><?php echo $this->translate('personal_website') ?>: <a href="<?php echo $this->website; ?>" title="<?php echo $this->website; ?>"><?php echo $this->website; ?></a></p>
-        <?php endif; ?>
-
-        <?php if($this->portalUrl && !$this->moreinfo): ?>
-            <p><a href="<?php echo $this->portalUrl; ?>" title="<?php echo $this->portalUrl; ?>"><?php echo $this->translate('my_profile_lucris') ?></a></p>
-        <?php endif; ?>
+            <?php if($this->portalUrl && !$this->moreinfo): ?>
+                <p><a href="<?php echo $this->portalUrl; ?>" title="<?php echo $this->portalUrl; ?>"><?php echo $this->translate('my_profile_lucris') ?></a></p>
+            <?php endif; ?>
+        <?php endif ?>
     </div>
 </div>
 
-<?php if($this->moreinfo): ?>
+<?php if($this->moreinfo && !$this->LeaveOfAbsence): ?>
     <p><a href="<?php echo $this->moreinfo; ?>"><?php echo ucfirst($this->translate('show more info')); ?></a></p>
 <?php endif; ?>
 

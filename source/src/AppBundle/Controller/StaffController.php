@@ -41,7 +41,7 @@ class StaffController extends Page
                 // Get person(s)
                 $personArr = [];
                 $persons = new DataObject\LucatPerson\Listing();
-                $persons->setOrderKey('surName');
+                $persons->setOrderKey('surName','givenName');
 
                 foreach ($persons as $person) {
                     if ($person->getOrganisationer()) {
@@ -107,10 +107,10 @@ class StaffController extends Page
         $this->view->baseUri = ($this->website['baseuri'] == '/') ? '/' : $this->website['baseuri'] . '/';
         $this->view->employeeUid = $uid;
         $this->view->org = $org = DataObject\LucatOrganisation::getByDepartmentNumber(
-                            $departmentNumber, ['limit' => 1,'unpublished' => true]);
+            $departmentNumber, ['limit' => 1,'unpublished' => true]);
 
         $this->view->staffList = $staffList = $this->getStaffListing(
-                $departmentNumber, array('uid' => $uid));
+            $departmentNumber, array('uid' => $uid));
 
         if( ! is_object($staffList)) {
             $this->redirectError();
@@ -169,10 +169,10 @@ class StaffController extends Page
         $this->view->query = $query = $request->get('q');
         if($query) {
             $this->view->staffList = $staffList = $this->getStaffListing(
-                                $departmentNumber, array('displayName' => $query));
+                $departmentNumber, array('displayName' => $query));
         }
         $this->view->org = DataObject\LucatOrganisation::getByDepartmentNumber(
-                        $departmentNumber, ['limit' => 1,'unpublished' => true]);
+            $departmentNumber, ['limit' => 1,'unpublished' => true]);
 
         $this->view->breadcrumbs = TRUE;
     }
@@ -213,7 +213,7 @@ class StaffController extends Page
         $r = new DataObject\LucatRoll;
         $p = new DataObject\LucatPerson;
         $query .= " AND EXISTS (SELECT oo_id FROM object_" . $r->getClassId() . 
-                  " WHERE object_" . $p->getClassId() . ".Roller LIKE CONCAT('%', object_" . $r->getClassId() . ".oo_id, '%') AND hideFromWeb = 0 AND leaveOfAbsence = 0)";
+                  " WHERE object_" . $p->getClassId() . ".Roller LIKE CONCAT('%', object_" . $r->getClassId() . ".oo_id, '%') AND hideFromWeb = 0)";
         if($departmentNumber) {
             $query = substr($query,0,-1) . " AND departmentNumber = '$departmentNumber')";
         }

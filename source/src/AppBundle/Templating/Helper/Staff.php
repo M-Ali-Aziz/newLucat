@@ -63,7 +63,11 @@ class Staff extends Helper
      * @param array     $attr 
      */
     public function StaffDetail($person, $attr = array())
-    {
+    {   
+        // Cech if the person is leave of absence
+        $LeaveOfAbsence = $this->getLeaveOfAbsence($person);
+        $pdata['LeaveOfAbsence'] = $LeaveOfAbsence;
+
         if( ! isset($attr['heading']) || $attr['heading']) {
 
             $pdata['heading'] = $person->getDisplayName();
@@ -103,6 +107,18 @@ class Staff extends Helper
 
         // rendering partial
         return $this->view->template($pdata['view'], $parameters);
+    }
+
+    public function getLeaveOfAbsence($person)
+    {
+        $LeaveOfAbsence = false;
+        foreach ($person->getRoller() as $roll) {
+            if ($roll->getLeaveOfAbsence() == true) {
+                $LeaveOfAbsence = true;
+            }
+        }
+
+        return $LeaveOfAbsence;
     }
 
     public function StaffPortalUrl($person, $attr){
